@@ -6,6 +6,8 @@ For dev:
 
   - git clone https://github.com/Yaaqoub/Nym_Plugin_V3
 
+Follow UML pls .... 
+
 if u make changes
 
   - git add .
