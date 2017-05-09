@@ -4,7 +4,7 @@ Under development
 
 For dev:
 
-1 - git clone https://github.com/Yaaqoub/Nym_Plugin_V3
+  - git clone https://github.com/Yaaqoub/Nym_Plugin_V3
 
 if u make changes
 
