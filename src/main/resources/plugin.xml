@@ -20,8 +20,18 @@
 		<editorKitId value="OWLEditorKit"/>
 		<defaultViewConfigFileName value="viewconfig-exampletab2.xml"/>
    </extension>
+   
+   <extension id="ExampleWorkspaceTab3" point="org.protege.editor.core.application.WorkspaceTab">
+		<label value="Nym Graph"/>
+		<class value="org.protege.editor.owl.ui.OWLWorkspaceViewsTab"/>
+		<index value="Z"/>
+		<editorKitId value="OWLEditorKit"/>
+		<defaultViewConfigFileName value="viewconfig-exampletab3.xml"/>
+   </extension>
+   
+   <!-- End Tabs -->
 
-	<!-- View -->
+	<!-- 1st View -->
 
 	<extension id="ExampleViewComponent" point="org.protege.editor.core.application.ViewComponent">
 		<label value="Individuals" />
@@ -30,5 +40,31 @@
 		<category value="@org.protege.ontologycategory" />
 	</extension>
 	
+	<extension id="ExampleViewComponent1" point="org.protege.editor.core.application.ViewComponent">
+		<label value="Individual Properties" />
+		<class value="edu.amu.nym.protege.plugin.set.view.SetViewComponent" />
+		<headerColor value="@org.protege.ontologycolor"/>
+		<category value="@org.protege.ontologycategory" />
+	</extension>
+	
+	<!-- End 1st View -->
+	
+	<!-- 2nd View -->
+	
+	<extension id="ExampleViewComponent2" point="org.protege.editor.core.application.ViewComponent">
+		<label value="Class Hierarchy" />
+		<class value="edu.amu.nym.protege.plugin.tree.view.TreeViewComponent" />
+		<headerColor value="@org.protege.ontologycolor"/>
+		<category value="@org.protege.ontologycategory" />
+	</extension>
+	
+	<extension id="ExampleViewComponent3" point="org.protege.editor.core.application.ViewComponent">
+		<label value="Graph" />
+		<class value="edu.amu.nym.protege.plugin.graph.view.GraphViewComponent" />
+		<headerColor value="@org.protege.ontologycolor"/>
+		<category value="@org.protege.ontologycategory" />
+	</extension>
+	
+	<!-- End 2nd View -->
     
 </plugin>

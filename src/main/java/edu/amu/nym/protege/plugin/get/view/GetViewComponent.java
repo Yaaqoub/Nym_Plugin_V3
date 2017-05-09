@@ -7,20 +7,25 @@ import org.slf4j.LoggerFactory;
 
 public class GetViewComponent extends AbstractOWLViewComponent {
 
-    private static final Logger log = LoggerFactory.getLogger(GetViewComponent.class);
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8542170863085349759L;
 
-    private FrameGet metricsComponent;
+	private static final Logger log = LoggerFactory.getLogger(GetViewComponent.class);
+
+    private FrameGet frameGetComponent;
 
     @Override
     protected void initialiseOWLView() throws Exception {
         setLayout(new BorderLayout());
-        metricsComponent = new FrameGet(getOWLModelManager());
-        add(metricsComponent, BorderLayout.CENTER);
-        log.info("Example View Component initialized");
+        frameGetComponent = new FrameGet(getOWLModelManager());
+        add(frameGetComponent, BorderLayout.CENTER);
+        log.info("Get View Component initialized");
     }
 
 	@Override
 	protected void disposeOWLView() {
-		metricsComponent.dispose();
+		frameGetComponent.dispose();
 	}
 }

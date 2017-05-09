@@ -8,8 +8,8 @@
         </CNode>
         
         <CNode>
-            <Component label="Class hierarchy">
-                <Property id="pluginId" value="org.protege.editor.owl.OWLAssertedClassHierarchy"/>
+            <Component label="Set View Component">
+                <Property id="pluginId" value="protege.plugin.nym.SetViewComponent"/>
             </Component>
         </CNode>
     </VSNode>
