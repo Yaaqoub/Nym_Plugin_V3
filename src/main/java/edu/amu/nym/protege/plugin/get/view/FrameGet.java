@@ -1,20 +1,17 @@
 package edu.amu.nym.protege.plugin.get.view;
 
+import java.awt.BorderLayout;
 import java.awt.Desktop;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JToolBar;
 
 import org.protege.editor.core.ui.error.ErrorLogPanel;
 import org.protege.editor.core.ui.util.LinkLabel;
@@ -34,7 +31,7 @@ public class FrameGet extends JPanel {
     public static OWLModelManager modelManager;
     
     
-	private final String classesNameFieldLabel = "Classes Name";
+	private final String classesNameFieldLabel = "Classes Names:  ";
 	
 	private JComboBox<Object> classesComboBox = new JComboBox<Object>();
 
@@ -61,37 +58,20 @@ public class FrameGet extends JPanel {
         }
     };
     
-    public FrameGet(OWLModelManager modelManager) {
+    @SuppressWarnings("static-access")
+	public FrameGet(OWLModelManager modelManager) {
     	this.modelManager = modelManager;
     	fillComboBox();
     	printIndividualsByclass();
 
         modelManager.addListener(modelListener);
                 
-        Insets insets = new Insets(0, 4, 2, 0);
-        
-        add(new LinkLabel(classesNameFieldLabel , e -> {
-        	showOntologyIRIDocumentation();
-        }), new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-									GridBagConstraints.BASELINE_TRAILING,
-									GridBagConstraints.NONE,
-									insets,
-									0, 0));
-        
-        add(classesComboBox,
-				 new GridBagConstraints(1, 0, 1, 1, 100.0, 0.0, 
-				 GridBagConstraints.BASELINE_LEADING, 
-				 GridBagConstraints.HORIZONTAL, 
-				 insets, 
-				 0, 0));
-        
-        add(new JScrollPane(individualsTable),
-				 new GridBagConstraints(1, 1, 1, 1, 100.0, 0.0, 
-				 GridBagConstraints.BASELINE_LEADING, 
-				 GridBagConstraints.HORIZONTAL, 
-				 insets, 
-				 0, 0));
+        setLayout(new BorderLayout());
+        add(createComboBox(), BorderLayout.NORTH);
+        add(new JScrollPane(individualsTable), BorderLayout.CENTER);
     }
+    
+    
     
     public void dispose() {
         modelManager.removeListener(modelListener);
@@ -104,6 +84,16 @@ public class FrameGet extends JPanel {
         catch (IOException ex) {
             ErrorLogPanel.showErrorDialog(ex);
         }
+    }
+    
+    private JToolBar createComboBox() {
+    	JToolBar panel = new JToolBar();
+    	panel.add(new LinkLabel(classesNameFieldLabel , e -> {
+        	showOntologyIRIDocumentation();
+        }));
+    	
+    	panel.add(classesComboBox);
+    	return panel;
     }
     
     private void fillComboBox() {
