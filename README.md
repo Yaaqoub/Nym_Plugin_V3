@@ -8,9 +8,9 @@ For dev:
 
 if u make changes
 
-1 - git add .
-2 - git commit -m "Your cmnt"
-3 - git fetch origin master
-4 - git pull
-5 - git push
+  - git add .
+  - git commit -m "Your cmnt"
+  - git fetch origin master
+  - git pull
+  - git push
 
