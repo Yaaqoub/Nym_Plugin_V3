@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
 
@@ -19,6 +21,8 @@ import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.event.EventType;
 import org.protege.editor.owl.model.event.OWLModelManagerListener;
 
+import edu.amu.nym.protege.plugin.set.view.FrameSet;
+
 public class FrameGet extends JPanel {
 
     /**
@@ -30,7 +34,11 @@ public class FrameGet extends JPanel {
 
     public static OWLModelManager modelManager;
     
+    public static boolean isIndividualsTableClicked = false;
     
+    public static String individualSelected = "";
+    
+        
 	private final String classesNameFieldLabel = "Classes Names:  ";
 	
 	private JComboBox<Object> classesComboBox = new JComboBox<Object>();
@@ -38,6 +46,8 @@ public class FrameGet extends JPanel {
 	private FillCombo fillCombo = new FillCombo();
 	
 	private FillIndividualsTable fillIndividualsTable = new FillIndividualsTable();
+	
+	private FrameSet frameSet = new FrameSet();
 	
 	private JTable individualsTable = new JTable(){
     	/**
@@ -69,6 +79,24 @@ public class FrameGet extends JPanel {
         setLayout(new BorderLayout());
         add(createComboBox(), BorderLayout.NORTH);
         add(new JScrollPane(individualsTable), BorderLayout.CENTER);
+        
+        individualsTable.addMouseListener(new MouseAdapter() {
+			  public void mouseClicked(MouseEvent e) {
+				  if (e.getClickCount() == 1) {
+					  isIndividualsTableClicked = true;
+				      JTable target = (JTable)e.getSource();
+				      int row = target.getSelectedRow();
+				      String rowValue = individualsTable.getModel().getValueAt(row, 0).toString();
+				      individualSelected = rowValue;
+				      
+				      frameSet.printPropertyByIndividual(modelManager.getActiveOntology(), individualSelected);
+				      //int column = target.getSelectedColumn();
+				      
+				      //String rowValue = table.getModel().getValueAt(row, 0).toString();
+				      //JOptionPane.showMessageDialog(null, "row " + row + " column" + column);
+			    }
+			  }
+      	});
     }
     
     

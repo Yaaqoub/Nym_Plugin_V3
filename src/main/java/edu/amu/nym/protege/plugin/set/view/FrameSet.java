@@ -1,52 +1,76 @@
 package edu.amu.nym.protege.plugin.set.view;
 
-import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JToolBar;
 
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.event.EventType;
 import org.protege.editor.owl.model.event.OWLModelManagerListener;
+import org.semanticweb.owlapi.model.OWLOntology;
 
 public class FrameSet extends JPanel {
-	private JButton refreshButton = new JButton("2nd view");
-
-    private JLabel textComponent = new JLabel();
-
-    private OWLModelManager modelManager;
 
 
-    private ActionListener refreshAction = e -> recalculate();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1732484583274649432L;
+
+
+	public static OWLModelManager modelManager;
+    
+    public static JTable propertyTable = new JTable();
+    
+    public static FillPropertiesTable fillPropertiesTable = new FillPropertiesTable();
+
+    
+    private JButton saveButton = new JButton("Save");
+    
+    private JButton addButton = new JButton("Add");
+    
+    private JButton deleteButton = new JButton("Delete");
+    
     
     private OWLModelManagerListener modelListener = event -> {
         if (event.getType() == EventType.ACTIVE_ONTOLOGY_CHANGED) {
-            recalculate();
+            //recalculate();
         }
     };
     
-    public FrameSet(OWLModelManager modelManager) {
+    public FrameSet(){
+    	
+    }
+    
+    @SuppressWarnings("static-access")
+	public FrameSet(OWLModelManager modelManager) {
     	this.modelManager = modelManager;
-        recalculate();
         
         modelManager.addListener(modelListener);
-        refreshButton.addActionListener(refreshAction);
         
-        add(textComponent);
-        add(refreshButton);
+        setLayout(new BorderLayout());
+        add(createButtons(), BorderLayout.NORTH);
+        add(new JScrollPane(propertyTable), BorderLayout.CENTER);
+        
     }
     
     public void dispose() {
         modelManager.removeListener(modelListener);
-        refreshButton.removeActionListener(refreshAction);
     }
     
-    private void recalculate() {
-        int count = modelManager.getActiveOntology().getClassesInSignature().size();
-        if (count == 0) {
-            count = 1;  // owl:Thing is always there.
-        }
-        textComponent.setText("Total classes = " + count);
+    private JToolBar createButtons() {
+    	JToolBar panel = new JToolBar();
+    	panel.add(saveButton);
+    	panel.add(addButton);
+    	panel.add(deleteButton);
+    	return panel;
+    }
+    
+    public static void printPropertyByIndividual(OWLOntology ontology, String indvName) {
+    	propertyTable.setModel(fillPropertiesTable.buildTableModel(ontology, indvName));
     }
 }
