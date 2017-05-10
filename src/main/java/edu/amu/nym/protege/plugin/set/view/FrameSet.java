@@ -1,8 +1,14 @@
 package edu.amu.nym.protege.plugin.set.view;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -11,7 +17,10 @@ import javax.swing.JToolBar;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.event.EventType;
 import org.protege.editor.owl.model.event.OWLModelManagerListener;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class FrameSet extends JPanel {
 
@@ -24,16 +33,20 @@ public class FrameSet extends JPanel {
 
 	public static OWLModelManager modelManager;
     
-    public static JTable propertyTable = new JTable();
+    public static JTable dataPropertyTable = new JTable();
+    
+    public static JTable objectPropertyTable = new JTable();
     
     public static FillPropertiesTable fillPropertiesTable = new FillPropertiesTable();
 
     
-    private JButton saveButton = new JButton("Save");
+    private AddProperty addProperty = new AddProperty();
     
-    private JButton addButton = new JButton("Add");
+    private JButton saveButton = new JButton(new ImageIcon("C:\\Users\\Yaaqoub\\workspace\\NYM_Plugin_V3\\src\\main\\resources\\save.png"));
     
-    private JButton deleteButton = new JButton("Delete");
+    private JButton addButton = new JButton(new ImageIcon("C:\\Users\\Yaaqoub\\workspace\\NYM_Plugin_V3\\src\\main\\resources\\add.png"));
+    
+    private JButton deleteButton = new JButton(new ImageIcon("C:\\Users\\Yaaqoub\\workspace\\NYM_Plugin_V3\\src\\main\\resources\\delete.png"));
     
     
     private OWLModelManagerListener modelListener = event -> {
@@ -49,13 +62,30 @@ public class FrameSet extends JPanel {
     @SuppressWarnings("static-access")
 	public FrameSet(OWLModelManager modelManager) {
     	this.modelManager = modelManager;
-        
         modelManager.addListener(modelListener);
         
         setLayout(new BorderLayout());
         add(createButtons(), BorderLayout.NORTH);
-        add(new JScrollPane(propertyTable), BorderLayout.CENTER);
+        add(new JScrollPane(objectPropertyTable), BorderLayout.CENTER);
+        add(new JScrollPane(dataPropertyTable), BorderLayout.SOUTH);
         
+        saveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				JOptionPane.showMessageDialog(null, "save");
+			}
+		});
+        
+        addButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				JOptionPane.showMessageDialog(null, "add");
+			}
+		});
+        
+        deleteButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				JOptionPane.showMessageDialog(null, "delete");
+			}
+		});
     }
     
     public void dispose() {
@@ -64,13 +94,28 @@ public class FrameSet extends JPanel {
     
     private JToolBar createButtons() {
     	JToolBar panel = new JToolBar();
+    	panel.setLayout(new GridLayout(1,7));
+    	
+    	for(int i = 0; i < 3; i++)
+    		panel.add(new JLabel(""));
+    	
     	panel.add(saveButton);
+    	panel.add(new JToolBar.Separator());
     	panel.add(addButton);
+    	panel.add(new JToolBar.Separator());
     	panel.add(deleteButton);
+    	
+    	for(int i = 0; i < 3; i++)
+    		panel.add(new JLabel(""));
+    	
     	return panel;
     }
     
-    public static void printPropertyByIndividual(OWLOntology ontology, String indvName) {
-    	propertyTable.setModel(fillPropertiesTable.buildTableModel(ontology, indvName));
+    public static void printDataPropertyByIndividual(OWLOntology ontology, String indvName) {
+    	dataPropertyTable.setModel(fillPropertiesTable.buildDataTableModel(ontology, indvName));
+    }
+    
+    public static void printObjectPropertyByIndividual(OWLOntology ontology, String indvName) {
+    	objectPropertyTable.setModel(fillPropertiesTable.buildObjectTableModel(ontology, indvName));
     }
 }

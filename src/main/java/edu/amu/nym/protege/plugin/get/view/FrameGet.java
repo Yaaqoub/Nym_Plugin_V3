@@ -89,11 +89,8 @@ public class FrameGet extends JPanel {
 				      String rowValue = individualsTable.getModel().getValueAt(row, 0).toString();
 				      individualSelected = rowValue;
 				      
-				      frameSet.printPropertyByIndividual(modelManager.getActiveOntology(), individualSelected);
-				      //int column = target.getSelectedColumn();
-				      
-				      //String rowValue = table.getModel().getValueAt(row, 0).toString();
-				      //JOptionPane.showMessageDialog(null, "row " + row + " column" + column);
+				      frameSet.printDataPropertyByIndividual(modelManager.getActiveOntology(), individualSelected);
+				      frameSet.printObjectPropertyByIndividual(modelManager.getActiveOntology(), individualSelected);
 			    }
 			  }
       	});
