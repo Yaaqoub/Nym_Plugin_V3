@@ -22,6 +22,8 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
+import edu.amu.nym.protege.plugin.get.view.FrameGet;
+
 public class FrameSet extends JPanel {
 
 
@@ -40,7 +42,11 @@ public class FrameSet extends JPanel {
     public static FillPropertiesTable fillPropertiesTable = new FillPropertiesTable();
 
     
-    private AddProperty addProperty = new AddProperty();
+    private OWLOntologyManager manager;
+    
+    private DeleteProperty deleteProperty = new DeleteProperty();
+    
+    //private AddProperty addProperty = new AddProperty();
     
     private JButton saveButton = new JButton(new ImageIcon("C:\\Users\\Yaaqoub\\workspace\\NYM_Plugin_V3\\src\\main\\resources\\save.png"));
     
@@ -64,6 +70,8 @@ public class FrameSet extends JPanel {
     	this.modelManager = modelManager;
         modelManager.addListener(modelListener);
         
+        manager = OWLManager.createOWLOntologyManager();
+        
         setLayout(new BorderLayout());
         add(createButtons(), BorderLayout.NORTH);
         add(new JScrollPane(objectPropertyTable), BorderLayout.CENTER);
@@ -77,13 +85,17 @@ public class FrameSet extends JPanel {
         
         addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(null, "add");
+				new AddProperty();
 			}
 		});
         
         deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(null, "delete");
+				//JOptionPane.showMessageDialog(null, "delete");
+				deleteProperty.deleteDataProperty(modelManager.getActiveOntology(), manager, FrameGet.individualSelected, "hasName");
+				printDataPropertyByIndividual(modelManager.getActiveOntology(), FrameGet.individualSelected);
+				repaint();
+				revalidate();
 			}
 		});
     }
