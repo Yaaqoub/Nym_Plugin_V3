@@ -59,53 +59,35 @@ public class FillIndividualsTable {
 		    		Set<OWLLiteral> nameV = reasoner.getDataPropertyValues(classIndName, hasNameProperty);
 		    		Set<OWLLiteral> idnV = reasoner.getDataPropertyValues(classIndName, hasIDnProperty);
 		    		Set<OWLLiteral> typologyNameV = reasoner.getDataPropertyValues(classIndName, hasTypologyNameProperty);
+
 		    		
-		    		if (nameV.size() == 0 && idnV.size() == 0 && typologyNameV.size() == 0){
-		    			rows = new Vector<Object>();
-		    			rows.add(classIndName);
+		    		rows = new Vector<Object>();
+		    		rows.add(classIndName);
+		    		
+		    		for (OWLLiteral idn : reasoner.getDataPropertyValues(classIndName, hasIDnProperty)) {
+		    			rows.add(idn.getLiteral());
 		    		}
-		    		else if (idnV.size() == 0 && typologyNameV.size() == 0) {
-		    			for (OWLLiteral name : reasoner.getDataPropertyValues(classIndName, hasNameProperty)) {
-		    				rows = new Vector<Object>();
-			    			rows.add(classIndName);
-			    			rows.add(null);
-			    			rows.add(name.getLiteral());
-		    			}
+		    		
+		    		if (idnV.size() == 0) {
+		    			rows.add(null);
 		    		}
-		    		else if (idnV.size() == 0) {
-		    			for (OWLLiteral name : reasoner.getDataPropertyValues(classIndName, hasNameProperty)) {
-		    				for (OWLLiteral typologyName : reasoner.getDataPropertyValues(classIndName, hasTypologyNameProperty)) {
-		    					rows = new Vector<Object>();
-				    			rows.add(classIndName);
-				    			rows.add(null);
-				    			rows.add(name.getLiteral());
-				    			rows.add(typologyName.getLiteral());
-		    				}
-		    			}
+		    		
+		    		for (OWLLiteral name : reasoner.getDataPropertyValues(classIndName, hasNameProperty)){
+		    			rows.add(name.getLiteral());
 		    		}
-		    		else if (typologyNameV.size() == 0) {
-		    			for (OWLLiteral name : reasoner.getDataPropertyValues(classIndName, hasNameProperty)) {
-		    				for (OWLLiteral idn : reasoner.getDataPropertyValues(classIndName, hasIDnProperty)) {
-		    					rows = new Vector<Object>();
-				    			rows.add(classIndName);
-				    			rows.add(idn.getLiteral());
-				    			rows.add(name.getLiteral());
-		    				}
-		    			}
+		    		
+		    		if (nameV.size() == 0) {
+		    			rows.add(null);
 		    		}
-		    		else {
-		    			for (OWLLiteral name : reasoner.getDataPropertyValues(classIndName, hasNameProperty)) {
-		    				for (OWLLiteral idn : reasoner.getDataPropertyValues(classIndName, hasIDnProperty)) {
-		    					for (OWLLiteral typologyName : reasoner.getDataPropertyValues(classIndName, hasTypologyNameProperty)) {
-		    						rows = new Vector<Object>();
-					    			rows.add(classIndName);
-					    			rows.add(idn.getLiteral());
-					    			rows.add(name.getLiteral());
-					    			rows.add(typologyName.getLiteral());
-		    					}
-		    				}
-		    			}
+		    		
+		    		for (OWLLiteral typologyName : reasoner.getDataPropertyValues(classIndName, hasTypologyNameProperty)) {
+		    			rows.add(typologyName.getLiteral());
 		    		}
+		    		
+		    		if (typologyNameV.size() == 0) {
+		    			rows.add(null);
+		    		}
+		    		
 		    		rowData.add(rows);
 		    	}
 			}

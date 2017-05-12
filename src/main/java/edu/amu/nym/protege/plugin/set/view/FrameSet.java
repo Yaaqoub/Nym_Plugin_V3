@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,10 +20,10 @@ import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.event.EventType;
 import org.protege.editor.owl.model.event.OWLModelManagerListener;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
+import edu.amu.nym.protege.plugin.get.view.FillIndividualsTable;
 import edu.amu.nym.protege.plugin.get.view.FrameGet;
 
 public class FrameSet extends JPanel {
@@ -40,11 +42,15 @@ public class FrameSet extends JPanel {
     public static JTable objectPropertyTable = new JTable();
     
     public static FillPropertiesTable fillPropertiesTable = new FillPropertiesTable();
+    
+    public static String selectedPropertyTableRowValue = "";
 
     
     private OWLOntologyManager manager;
     
     private DeleteProperty deleteProperty = new DeleteProperty();
+    
+    private FillIndividualsTable fillIndividualsTable = new FillIndividualsTable();
     
     //private AddProperty addProperty = new AddProperty();
     
@@ -53,6 +59,10 @@ public class FrameSet extends JPanel {
     private JButton addButton = new JButton(new ImageIcon("C:\\Users\\Yaaqoub\\workspace\\NYM_Plugin_V3\\src\\main\\resources\\add.png"));
     
     private JButton deleteButton = new JButton(new ImageIcon("C:\\Users\\Yaaqoub\\workspace\\NYM_Plugin_V3\\src\\main\\resources\\delete.png"));
+    
+    private boolean isDataProperty = false;
+    
+    private boolean isObjectProperty = false;
     
     
     private OWLModelManagerListener modelListener = event -> {
@@ -79,7 +89,7 @@ public class FrameSet extends JPanel {
         
         saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(null, "save");
+				JOptionPane.showMessageDialog(null, selectedPropertyTableRowValue);
 			}
 		});
         
@@ -91,13 +101,50 @@ public class FrameSet extends JPanel {
         
         deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				//JOptionPane.showMessageDialog(null, "delete");
-				deleteProperty.deleteDataProperty(modelManager.getActiveOntology(), manager, FrameGet.individualSelected, "hasName");
-				printDataPropertyByIndividual(modelManager.getActiveOntology(), FrameGet.individualSelected);
-				repaint();
-				revalidate();
+				
+				if (isDataProperty == true) {
+					deleteProperty.deleteDataProperty(modelManager.getActiveOntology(), manager, FrameGet.individualSelected, selectedPropertyTableRowValue);
+					printDataPropertyByIndividual(modelManager.getActiveOntology(), FrameGet.individualSelected);
+					
+				} else if (isObjectProperty == true) {
+					deleteProperty.deleteObjectProperty(modelManager.getActiveOntology(), manager, FrameGet.individualSelected, selectedPropertyTableRowValue);
+					printObjectPropertyByIndividual(modelManager.getActiveOntology(), FrameGet.individualSelected);
+				}else {
+					JOptionPane.showMessageDialog(null, "Select a property to delete !!",
+													"Property not selected",
+													JOptionPane.WARNING_MESSAGE);
+				}
+
+				String selectedClass = FrameGet.classesComboBox.getSelectedItem().toString();
+				FrameGet.individualsTable.setModel(fillIndividualsTable.buildTableModel(modelManager.getActiveOntology(), selectedClass));
 			}
 		});
+        
+        dataPropertyTable.addMouseListener(new MouseAdapter() {
+			  public void mouseClicked(MouseEvent e) {
+				  if (e.getClickCount() == 1) {
+					  isDataProperty = true;
+					  isObjectProperty = false;
+				      JTable target = (JTable)e.getSource();
+				      int row = target.getSelectedRow();
+				      selectedPropertyTableRowValue = dataPropertyTable.getModel().getValueAt(row, 0).toString();
+				      objectPropertyTable.getSelectionModel().clearSelection();
+			    }
+			  }
+    	});
+        
+        objectPropertyTable.addMouseListener(new MouseAdapter() {
+			  public void mouseClicked(MouseEvent e) {
+				  if (e.getClickCount() == 1) {
+					  isObjectProperty = true;
+					  isDataProperty = false;
+				      JTable target = (JTable)e.getSource();
+				      int row = target.getSelectedRow();
+				      selectedPropertyTableRowValue = objectPropertyTable.getModel().getValueAt(row, 0).toString();
+				      dataPropertyTable.getSelectionModel().clearSelection();
+			    }
+			  }
+  	});
     }
     
     public void dispose() {

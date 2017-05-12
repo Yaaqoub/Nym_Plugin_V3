@@ -38,18 +38,9 @@ public class FrameGet extends JPanel {
     
     public static String individualSelected = "";
     
-        
-	private final String classesNameFieldLabel = "Classes Names:  ";
-	
-	private JComboBox<Object> classesComboBox = new JComboBox<Object>();
-
-	private FillCombo fillCombo = new FillCombo();
-	
-	private FillIndividualsTable fillIndividualsTable = new FillIndividualsTable();
-	
-	private FrameSet frameSet = new FrameSet();
-	
-	private JTable individualsTable = new JTable(){
+    public static JComboBox<Object> classesComboBox = new JComboBox<Object>();
+    
+    public static JTable individualsTable = new JTable(){
     	/**
 		 * 
 		 */
@@ -60,7 +51,16 @@ public class FrameGet extends JPanel {
             return false;               
     	}; 
     };
+    
+        
+	private final String classesNameFieldLabel = "Classes Names:  ";
+
+	private FillCombo fillCombo = new FillCombo();
 	
+	private FillIndividualsTable fillIndividualsTable = new FillIndividualsTable();
+	
+	private FrameSet frameSet = new FrameSet();
+
     
     private OWLModelManagerListener modelListener = event -> {
         if (event.getType() == EventType.ACTIVE_ONTOLOGY_CHANGED) {
@@ -91,6 +91,8 @@ public class FrameGet extends JPanel {
 				      
 				      frameSet.printDataPropertyByIndividual(modelManager.getActiveOntology(), individualSelected);
 				      frameSet.printObjectPropertyByIndividual(modelManager.getActiveOntology(), individualSelected);
+				      
+				      FrameSet.selectedPropertyTableRowValue = "";
 			    }
 			  }
       	});
