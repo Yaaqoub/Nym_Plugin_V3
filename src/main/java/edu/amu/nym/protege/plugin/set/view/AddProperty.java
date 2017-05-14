@@ -17,13 +17,24 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
+
+import edu.amu.nym.protege.plugin.get.view.FrameGet;
+
 public class AddProperty extends JPanel{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3835901111290787120L;
+
 	private String prefix = "";
 	
 	private JTextField propertyNameField;
@@ -32,16 +43,35 @@ public class AddProperty extends JPanel{
 	
 	private JComboBox<String> dataTypeCombo;
 	
-	String[] dataTypes = { "boolean", "byte", "dateTime", "decimal", "double",
-							"float", "hexBinary", "int", "integer", "long",
-							"name", "short", "string", "unsignedByte", "unsignedLong", "unsignedShort"};
+	String[] dataTypes = { "boolean", "byte", "decimal", "double",
+							"float", "int", "integer", "long",
+							"name", "short", "string"};
 	
 	
-	public AddProperty() {
-		createUI();
+	public AddProperty(OWLOntology ontology, OWLOntologyManager manager) {
+		chosingUI(ontology, manager);
 	}
 	
-	private void createUI() {
+	private void chosingUI(OWLOntology ontology, OWLOntologyManager manager) {
+		Object[] options = {"Add Data Property",
+                			"Add Object Property"};
+		
+		int choosingOne = JOptionPane.showOptionDialog(this,
+											    "What type of property you want to add ??",
+											    "Chose",
+											    JOptionPane.YES_NO_CANCEL_OPTION,
+											    JOptionPane.QUESTION_MESSAGE,
+											    null,
+											    options,
+											    options[1]);
+		if (choosingOne == 0) {
+			createDataPropertyUI(ontology, manager);
+		} else if (choosingOne == 1) {
+			createObjectPropertyUI();
+		}
+	}
+	
+	private void createDataPropertyUI(OWLOntology ontology, OWLOntologyManager manager) {
 		setLayout(new BorderLayout());
 		
 		propertyNameField = new JTextField(45);
@@ -69,41 +99,53 @@ public class AddProperty extends JPanel{
                 JOptionPane.OK_CANCEL_OPTION,
                 this.propertyNameField);
 		
+		addDataProperty(ontology, manager, propertyNameField.getText(), propertyValueField.getText(), dataTypeCombo.getSelectedItem().toString());
+		
 		/*JOptionPane.showMessageDialog(null, "first: " + propertyNameField.getText() 
 										+ " 2nd " + propertyValueField.getText()
 										+ " combo " + dataTypeCombo.getSelectedItem());*/
 		
 	}
 	
-	/*public static boolean save(OWLOntology ontology, OWLOntologyManager manager, String fileName) {
-		boolean ok = true;
-		IRI ontoSavedIRI = IRI.create(fileName);
-		
-		try {
-			manager.saveOntology(ontology, ontoSavedIRI);
-		} catch (OWLOntologyStorageException e) {
-			JOptionPane.showMessageDialog(null, "problem writting ontology " + e);
-			ok = false;
-		}
-		
-		if (ok)
-			JOptionPane.showMessageDialog(null, "writting ontology done");
-		
-		return ok;
-	}*/
-	
-	public void addDataProperty(OWLOntology ontology, OWLOntologyManager manager, String dataProperty, String individualName, int dataPropertyValue, String ontologyFile) {
-		
-		/*for (OWLClass clazz : ontology.getClassesInSignature()) {
-			prefix = clazz.getIRI().getNamespace();
-		}
-		
+	private void addDataProperty(OWLOntology ontology, OWLOntologyManager manager, String propertyName, String value, String comboBoxValue) {
 		OWLDataFactory factory = manager.getOWLDataFactory();
-		OWLDataProperty hasDataProperty = factory.getOWLDataProperty(IRI.create(prefix + dataProperty));
-		OWLNamedIndividual classIndName = factory.getOWLNamedIndividual(IRI.create(prefix + individualName));
-		OWLAxiom axiom = factory.getOWLDataPropertyAssertionAxiom(hasDataProperty, classIndName, dataPropertyValue);
 		
-		manager.applyChange(new AddAxiom(ontology, axiom));
-		AddProperty.save(ontology, manager, ontologyFile);*/
+		for (OWLClass c : ontology.getClassesInSignature()) {
+			String prefix = c.getIRI().getNamespace();
+			OWLAxiom axiom = null;
+			OWLDataProperty hasSomethingProperty = factory.getOWLDataProperty(IRI.create(prefix + propertyName));
+			OWLNamedIndividual classIndName = factory.getOWLNamedIndividual(IRI.create(prefix + FrameGet.individualSelected));
+			
+			if (comboBoxValue.equals("boolean"))
+				axiom = factory.getOWLDataPropertyAssertionAxiom(hasSomethingProperty, classIndName, Boolean.parseBoolean(value));
+			else if (comboBoxValue.equals("byte"))
+				axiom = factory.getOWLDataPropertyAssertionAxiom(hasSomethingProperty, classIndName, Byte.parseByte(value));
+			else if (comboBoxValue.equals("decimal"))
+				axiom = factory.getOWLDataPropertyAssertionAxiom(hasSomethingProperty, classIndName, Float.parseFloat(value));
+			else if (comboBoxValue.equals("double")) 
+				axiom = factory.getOWLDataPropertyAssertionAxiom(hasSomethingProperty, classIndName, Double.parseDouble(value));
+			else if (comboBoxValue.equals("int")) 
+				axiom = factory.getOWLDataPropertyAssertionAxiom(hasSomethingProperty, classIndName, Integer.parseInt(value));
+			else if (comboBoxValue.equals("integer")) 
+				axiom = factory.getOWLDataPropertyAssertionAxiom(hasSomethingProperty, classIndName, Integer.parseInt(value));
+			else if (comboBoxValue.equals("long")) 
+				axiom = factory.getOWLDataPropertyAssertionAxiom(hasSomethingProperty, classIndName, Long.parseLong(value));
+			else if (comboBoxValue.equals("short")) 
+				axiom = factory.getOWLDataPropertyAssertionAxiom(hasSomethingProperty, classIndName, Short.parseShort(value));
+			else
+				axiom = factory.getOWLDataPropertyAssertionAxiom(hasSomethingProperty, classIndName, value);
+			
+			
+			
+			manager.applyChange(new AddAxiom(ontology, axiom));
+		}
+	}
+	
+	private void createObjectPropertyUI() {
+		JOptionPane.showMessageDialog(null, "You are in add object property !!!");
+	}
+	
+	private void addObjectProperty(OWLOntology ontology) {
+		
 	}
 }

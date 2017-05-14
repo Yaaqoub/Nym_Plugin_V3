@@ -1,53 +1,67 @@
 package edu.amu.nym.protege.plugin.tree.view;
 
-import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreePath;
 
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.event.EventType;
 import org.protege.editor.owl.model.event.OWLModelManagerListener;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class FrameTree extends JPanel {
-	private JButton refreshButton = new JButton("1st tree view");
 
-    private JLabel textComponent = new JLabel();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3155394581640508282L;
 
-    private OWLModelManager modelManager;
 
+	public static OWLModelManager modelManager;
+	
+	public static OWLOntologyManager manager;
+	
+	
+	
+	private FillJTree fillJTree = new FillJTree();
+	
+	public static MyJTree classHierarchyTree;
+	
+	
 
-    private ActionListener refreshAction = e -> recalculate();
     
     private OWLModelManagerListener modelListener = event -> {
         if (event.getType() == EventType.ACTIVE_ONTOLOGY_CHANGED) {
-            recalculate();
+            //recalculate();
         }
     };
     
-    public FrameTree(OWLModelManager modelManager) {
+    @SuppressWarnings("static-access")
+	public FrameTree(OWLModelManager modelManager) {
     	this.modelManager = modelManager;
-        recalculate();
-        
+    	
+    	manager = OWLManager.createOWLOntologyManager();
+    	
         modelManager.addListener(modelListener);
-        refreshButton.addActionListener(refreshAction);
-        
-        add(textComponent);
-        add(refreshButton);
+
+        classHierarchyTree = new MyJTree(fillJTree.fillJTree());
+        setLayout(new BorderLayout());
+        add(new JScrollPane((JTree) classHierarchyTree), "Center");
     }
     
     public void dispose() {
         modelManager.removeListener(modelListener);
-        refreshButton.removeActionListener(refreshAction);
     }
     
-    private void recalculate() {
-        int count = modelManager.getActiveOntology().getClassesInSignature().size();
-        if (count == 0) {
-            count = 1;  // owl:Thing is always there.
-        }
-        textComponent.setText("Total classes = " + count);
-    }
 
 }

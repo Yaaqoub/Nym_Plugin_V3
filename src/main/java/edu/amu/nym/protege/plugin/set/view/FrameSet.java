@@ -52,8 +52,8 @@ public class FrameSet extends JPanel {
     
     private FillIndividualsTable fillIndividualsTable = new FillIndividualsTable();
     
-    //private AddProperty addProperty = new AddProperty();
-    
+    private SaveOntology saveOntology = new SaveOntology();
+        
     private JButton saveButton = new JButton(new ImageIcon("C:\\Users\\Yaaqoub\\workspace\\NYM_Plugin_V3\\src\\main\\resources\\save.png"));
     
     private JButton addButton = new JButton(new ImageIcon("C:\\Users\\Yaaqoub\\workspace\\NYM_Plugin_V3\\src\\main\\resources\\add.png"));
@@ -89,13 +89,19 @@ public class FrameSet extends JPanel {
         
         saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(null, selectedPropertyTableRowValue);
+				saveOntology.save(manager, modelManager.getActiveOntology());
 			}
 		});
         
         addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				new AddProperty();
+				new AddProperty(modelManager.getActiveOntology(), manager);
+				
+				printDataPropertyByIndividual(modelManager.getActiveOntology(), FrameGet.individualSelected);
+				printObjectPropertyByIndividual(modelManager.getActiveOntology(), FrameGet.individualSelected);
+				
+				String selectedClass = FrameGet.classesComboBox.getSelectedItem().toString();
+				FrameGet.individualsTable.setModel(fillIndividualsTable.buildTableModel(modelManager.getActiveOntology(), selectedClass));
 			}
 		});
         

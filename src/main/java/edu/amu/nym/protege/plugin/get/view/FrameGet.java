@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -81,7 +82,7 @@ public class FrameGet extends JPanel {
         add(new JScrollPane(individualsTable), BorderLayout.CENTER);
         
         individualsTable.addMouseListener(new MouseAdapter() {
-			  public void mouseClicked(MouseEvent e) {
+			  public void mousePressed(MouseEvent e) {
 				  if (e.getClickCount() == 1) {
 					  isIndividualsTableClicked = true;
 				      JTable target = (JTable)e.getSource();
@@ -93,7 +94,10 @@ public class FrameGet extends JPanel {
 				      frameSet.printObjectPropertyByIndividual(modelManager.getActiveOntology(), individualSelected);
 				      
 				      FrameSet.selectedPropertyTableRowValue = "";
-			    }
+				      
+				   } else if (e.getButton() == MouseEvent.BUTTON3) {
+				    	JOptionPane.showMessageDialog(null, "u clicked right 3");
+				   }
 			  }
       	});
     }
