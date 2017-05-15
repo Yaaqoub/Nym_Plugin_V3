@@ -19,32 +19,33 @@ import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
-public class AddIndividual extends JPanel{
+public class AddClass extends JPanel {
+
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8708676703694351371L;
-	
-	private JTextField individualNameField;
-		
-	private JLabel iriLabel;
+	private static final long serialVersionUID = -453441713782972782L;
 
+	private JTextField classNameField;
 	
-	public AddIndividual() {
+	private JLabel iriLabel;
+	
+	
+	public AddClass() {
 		
 	}
-
-	private void addIndividualAlgo(OWLOntology ontology, OWLOntologyManager manager, String className, String individualName) {
+	
+	private void addClassAlgo(OWLOntology ontology, OWLOntologyManager manager, String className, String firstIndividual) {
 		OWLDataFactory factory = FrameTree.modelManager.getOWLDataFactory();
 		
 		for (OWLClass c : ontology.getClassesInSignature()) {
 			String prefix = c.getIRI().getNamespace();
 			
-			//i7dyiwi rbi ri7 anzayd7 class ":"
-			OWLClass clsPSS = factory.getOWLClass(IRI.create(prefix + className));
+			//i7dyiwi rbi ri7 anzayd7 class ":" && l3akes adkiss7 ":"
+			OWLClass clsPSS = factory.getOWLClass(IRI.create(prefix + ":" + className));
 			
-			OWLNamedIndividual indivName = factory.getOWLNamedIndividual(IRI.create(prefix + ":" + individualName));
+			OWLNamedIndividual indivName = factory.getOWLNamedIndividual(IRI.create(prefix + ":" + firstIndividual));
 			
 			OWLClassAssertionAxiom classAssertion = factory.getOWLClassAssertionAxiom(clsPSS, indivName);
 						
@@ -53,13 +54,13 @@ public class AddIndividual extends JPanel{
 		}
 	}
 	
-	public void addIndividualUI(OWLOntology ontology, OWLOntologyManager manager, String className) {
+	public void addClassUI(OWLOntology ontology, OWLOntologyManager manager) {
 		setLayout(new BorderLayout());
 		
-		individualNameField = new JTextField(45);
+		classNameField = new JTextField(45);
 		JPanel individualNameFieldHolder = new JPanel(new BorderLayout());
-		individualNameFieldHolder.setBorder(ComponentFactory.createTitledBorder("Name"));
-		individualNameFieldHolder.add(individualNameField, BorderLayout.NORTH);
+		individualNameFieldHolder.setBorder(ComponentFactory.createTitledBorder("Class Name"));
+		individualNameFieldHolder.add(classNameField, BorderLayout.NORTH);
 		add(individualNameFieldHolder, BorderLayout.NORTH);
 		
 		iriLabel = new JLabel();
@@ -69,7 +70,7 @@ public class AddIndividual extends JPanel{
 		iriFieldHolder.add(iriLabel, BorderLayout.CENTER);
 		add(iriFieldHolder, BorderLayout.CENTER);
 		
-		individualNameField.getDocument().addDocumentListener(new DocumentListener(){
+		classNameField.getDocument().addDocumentListener(new DocumentListener(){
 
 			@Override
 			public void changedUpdate(DocumentEvent arg0) {
@@ -87,21 +88,21 @@ public class AddIndividual extends JPanel{
 			}
 			
 			public void changeText() {
-				iriLabel.setText(getIRI(ontology) + individualNameField.getText());
+				iriLabel.setText(getIRI(ontology) + classNameField.getText());
 			}
 			
 		});
 		
 		JOptionPaneEx.showValidatingConfirmDialog(null,
-                "Create a new OWLNamedIndividual",
+                "Create a new OWLClass",
                 this,
                 JOptionPane.PLAIN_MESSAGE,
                 JOptionPane.OK_CANCEL_OPTION,
-                this.individualNameField);
+                this.classNameField);
 		
-		addIndividualAlgo(ontology, manager, className, individualNameField.getText());
+		addClassAlgo(ontology, manager, classNameField.getText(), "IndividualTest");
 		
-		individualNameField.setText("");
+		classNameField.setText("");
 		iriLabel.setText(getIRI(ontology));
 	}
 	
@@ -113,5 +114,4 @@ public class AddIndividual extends JPanel{
 		
 		return prefix;
 	}
-	
 }

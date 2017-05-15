@@ -21,7 +21,7 @@ public class GraphViewComponent extends AbstractOWLViewComponent{
         setLayout(new BorderLayout());
         frameGraphComponent = new FrameGraph(getOWLModelManager());
         add(frameGraphComponent, BorderLayout.CENTER);
-        log.info("Get View Component initialized");
+        log.info("Graph View Component initialized");
     }
 
 	@Override

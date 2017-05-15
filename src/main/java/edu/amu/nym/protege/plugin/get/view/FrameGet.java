@@ -56,7 +56,7 @@ public class FrameGet extends JPanel {
         
 	private final String classesNameFieldLabel = "Classes Names:  ";
 
-	private FillCombo fillCombo = new FillCombo();
+	private static FillCombo fillCombo = new FillCombo();
 	
 	private FillIndividualsTable fillIndividualsTable = new FillIndividualsTable();
 	
@@ -132,8 +132,6 @@ public class FrameGet extends JPanel {
     		classesComboBox.removeAllItems();
 		}
     	classesComboBox.setModel(fillCombo.fillComboBox());
-    	repaint();
-        revalidate();
     }
     
     private void printIndividualsByclass() {

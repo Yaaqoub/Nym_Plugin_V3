@@ -95,7 +95,7 @@ public class FrameSet extends JPanel {
         
         addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				new AddProperty(modelManager.getActiveOntology(), manager);
+				new AddProperty(modelManager.getActiveOntology(), manager, FrameGet.individualSelected);
 				
 				printDataPropertyByIndividual(modelManager.getActiveOntology(), FrameGet.individualSelected);
 				printObjectPropertyByIndividual(modelManager.getActiveOntology(), FrameGet.individualSelected);
