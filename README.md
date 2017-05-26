@@ -2,7 +2,7 @@
 
 Under development
 
-Rapport de projet: [click here](https://drive.google.com/drive/u/0/my-drive)
+Rapport de projet: [click here](https://drive.google.com/file/d/0B40h0WEut28yaXMwNWVVNDkwUzQ/view)
 
 For dev:
 
