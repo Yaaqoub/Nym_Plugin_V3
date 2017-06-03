@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -15,6 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableCellEditor;
 
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.event.EventType;
@@ -37,7 +42,23 @@ public class FrameSet extends JPanel {
 
 	public static OWLModelManager modelManager;
     
-    public static JTable dataPropertyTable = new JTable();
+    public static JTable dataPropertyTable = new JTable(){
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -127924218932983028L;
+		
+		@Override
+		public boolean isCellEditable(int row, int column) {   
+			switch (column) {
+	         case 0:
+	        	 return false;
+	         default:
+	             return true;
+	      }              
+    	}; 
+    };
     
     public static JTable objectPropertyTable = new JTable();
     
@@ -138,6 +159,28 @@ public class FrameSet extends JPanel {
 			    }
 			  }
     	});
+        
+       dataPropertyTable.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+            	TableCellEditor editor = dataPropertyTable.getCellEditor();
+            	
+            	if (editor != null) {
+            		editor.stopCellEditing();
+            	}
+
+                int row = dataPropertyTable.getSelectedRow();
+                int column = dataPropertyTable.getSelectedColumn();
+
+                String dataPropertyValue = dataPropertyTable.getValueAt(row, column).toString();
+                String dataPropertyName = dataPropertyTable.getValueAt(row, 0).toString();
+                
+                new ChangeValueTest(modelManager.getActiveOntology(), manager, FrameGet.individualSelected, dataPropertyName, dataPropertyValue);
+
+                //JOptionPane.showMessageDialog(null, " " + resul + " " + id);
+            }
+        });
+        
         
         objectPropertyTable.addMouseListener(new MouseAdapter() {
 			  public void mouseClicked(MouseEvent e) {
